@@ -19,9 +19,9 @@
   - [Processo de Codificação](#processo-de-codificacao)
   - [Processo de Decodificação](#processo-de-decodificacao)
 - [Exemplos](#exemplos)
-- [Limitações](#limitacoes)
+- [Limitações](#Limitações)
 - [Referências](#referencias)
-- [Licença](#licenca)
+- [Licença](https://github.com/Guilherme-alexander/PokeStego/blob/main/LICENSE)
 
 ---
 
@@ -281,7 +281,7 @@ console.log("Texto gerado:", codificado);
 3. **Memória**: Modelos com ordem alta (>4) podem consumir muita memória
 4. **Detectabilidade**: Embora seja mais natural que outros métodos, a esteganografia baseada em Markov ainda pode ser detectada com análise estatística avançada
 
-## Referências
+## Referencias
 
 - Moraldo, H. "An Approach for Text Steganography Based on Markov Chains" - 41 JAIIO, 2012
 - Implementação original: [markovTextStego.js](https://github.com/jthuraisamy/markovTextStego.js)
