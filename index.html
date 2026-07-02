@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokeStego - Esteganografia Pokémon</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- GitHub Ribbon -->
+    <a href="https://github.com/guilherme-alexander/PokeStego" class="github-ribbon" target="_blank">
+        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub">
+        <span>Fork me on GitHub</span>
+    </a>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="pokeball-icon">⚡</div>
+            <h1>PokeStego</h1>
+            <p class="subtitle">✨ Esteganografia com Tema Pokémon ✨</p>
+            <div class="badges">
+                <span class="badge">900+ Pokémon</span>
+                <span class="badge">Itens</span>
+                <span class="badge">Ataques</span>
+                <span class="badge">Treinadores</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="status-label">Status:</span>
+                <span id="status-indicator" class="status-ready">✅ Pronto</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Progresso:</span>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <span id="progress-text" class="progress-text">0%</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">N-gram:</span>
+                <span id="ngram-display" class="status-value">3</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Pokémons:</span>
+                <span id="pokemon-count" class="status-value">905</span>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid-container">
+            <!-- Left Panel: Corpus -->
+            <div class="panel panel-corpus">
+                <div class="panel-header">
+                    <span class="panel-icon">📚</span>
+                    <h2>Corpus Pokémon</h2>
+                    <span class="panel-badge">Treinamento</span>
+                </div>
+                <div class="panel-body">
+                    <div class="corpus-selector">
+                        <select id="corpus-selector" class="form-control">
+                            <option value="all">🌍 Todos os Pokémon</option>
+                            <option value="kanto">🔴 Kanto (151)</option>
+                            <option value="johto">🟡 Johto (100)</option>
+                            <option value="hoenn">🔵 Hoenn (135)</option>
+                            <option value="sinnoh">🟣 Sinnoh (107)</option>
+                            <option value="unova">⚫ Unova (156)</option>
+                            <option value="kalos">🔶 Kalos (72)</option>
+                            <option value="alola">🌈 Alola (88)</option>
+                            <option value="galar">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Galar (89)</option>
+                            <option value="paldea">🟣 Paldea (120)</option>
+                            <option value="custom">🎨 Custom...</option>
+                        </select>
+                        <button id="load-corpus" class="btn btn-pokemon">Carregar Corpus</button>
+                    </div>
+                    <textarea id="input-corpus"
+                              class="form-control textarea-corpus"
+                              placeholder="Cole seu corpus personalizado aqui..."
+                              rows="8"
+                              disabled></textarea>
+                    <div class="corpus-info">
+                        <span id="corpus-size">Palavras: 0</span>
+                        <span id="corpus-unique">Únicas: 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Panel: Encode -->
+            <div class="panel panel-encode">
+                <div class="panel-header">
+                    <span class="panel-icon">🔒</span>
+                    <h2>Codificar</h2>
+                    <span class="panel-badge">Encode</span>
+                </div>
+                <div class="panel-body">
+                    <textarea id="input-text"
+                              class="form-control textarea-input"
+                              placeholder="Digite sua mensagem secreta aqui..."
+                              rows="6"></textarea>
+                    <div class="button-group">
+                        <button id="encode-btn" class="btn btn-encode" disabled>
+                            <span class="btn-icon">🔐</span>
+                            Codificar Mensagem
+                        </button>
+                        <button id="clear-encode" class="btn btn-clear">🗑️ Limpar</button>
+                    </div>
+                    <div class="hint">
+                        <span class="hint-icon">💡</span>
+                        <span>Digite algo para ativar a codificação</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Decode -->
+            <div class="panel panel-decode">
+                <div class="panel-header">
+                    <span class="panel-icon">🔓</span>
+                    <h2>Decodificar</h2>
+                    <span class="panel-badge">Decode</span>
+                </div>
+                <div class="panel-body">
+                    <textarea id="output-text"
+                              class="form-control textarea-output"
+                              placeholder="Texto codificado aparecerá aqui..."
+                              rows="6"></textarea>
+                    <div class="button-group">
+                        <button id="decode-btn" class="btn btn-decode" disabled>
+                            <span class="btn-icon">🔓</span>
+                            Decodificar Mensagem
+                        </button>
+                        <button id="clear-decode" class="btn btn-clear">🗑️ Limpar</button>
+                    </div>
+                    <div class="hint">
+                        <span class="hint-icon">💡</span>
+                        <span>Clique em "Codificar" para gerar o texto</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-ngrams">0</div>
+                    <div class="stat-label">N-grams</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-words">0</div>
+                    <div class="stat-label">Palavras no Corpus</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-capacity">0</div>
+                    <div class="stat-label">Capacidade (bits)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-messages">0</div>
+                    <div class="stat-label">Mensagens Processadas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentation -->
+        <div class="documentation">
+            <div class="doc-header">
+                <h2>📖 Documentação PokeStego</h2>
+                <button class="btn-toggle-doc" id="toggle-doc">▲</button>
+            </div>
+            <div class="doc-content" id="doc-content">
+                <!-- Quick Start -->
+                <section class="doc-section">
+                    <h3>🚀 Início Rápido</h3>
+                    <div class="doc-grid">
+                        <div class="doc-card">
+                            <h4>1. Carregue o Corpus</h4>
+                            <p>Selecione uma geração de Pokémon ou use seu próprio corpus personalizado. O corpus é usado para treinar o modelo de linguagem.</p>
+                            <div class="code-example">
+                                <span class="code-comment">// Selecionar corpus</span>
+                                <span class="code-keyword">const</span> corpus = <span class="code-string">"Pikachu usa Thunderbolt!"</span>;
+                            </div>
+                        </div>
+                        <div class="doc-card">
+                            <h4>2. Codifique</h4>
+                            <p>Digite sua mensagem secreta e clique em "Codificar". O texto gerado parecerá uma conversa normal sobre Pokémon.</p>
+                            <div class="code-example">
+                                <span class="code-comment">// Codificar mensagem</span>
+                                <span class="code-keyword">const</span> encoded = stego.encode(<span class="code-string">"Senha123"</span>);
+                            </div>
+                        </div>
+                        <div class="doc-card">
+                            <h4>3. Decodifique</h4>
+                            <p>Cole o texto codificado e clique em "Decodificar" para revelar a mensagem original.</p>
+                            <div class="code-example">
+                                <span class="code-comment">// Decodificar</span>
+                                <span class="code-keyword">const</span> decoded = stego.decode(encodedText);
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Features -->
+                <section class="doc-section">
+                    <h3>✨ Funcionalidades</h3>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <span class="feature-icon">🎮</span>
+                            <div>
+                                <h4>900+ Pokémon</h4>
+                                <p>Base de dados com todas as 9 gerações de Pokémon</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🎯</span>
+                            <div>
+                                <h4>Itens e Ataques</h4>
+                                <p>Master Balls, Berries, Thunderbolt e muito mais</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">👤</span>
+                            <div>
+                                <h4>Treinadores</h4>
+                                <p>Ash, Misty, Brock e outros personagens famosos</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">⚡</span>
+                            <div>
+                                <h4>Tema Elétrico</h4>
+                                <p>Design moderno com tema Pokémon estilo futurista</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🔐</span>
+                            <div>
+                                <h4>Esteganografia Avançada</h4>
+                                <p>Baseado em Markov Chains com n-gram</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📊</span>
+                            <div>
+                                <h4>Estatísticas em Tempo Real</h4>
+                                <p>Visualize métricas do modelo e capacidade</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Configurations -->
+                <section class="doc-section">
+                    <h3>⚙️ Configurações Avançadas</h3>
+                    <div class="config-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parâmetro</th>
+                                    <th>Descrição</th>
+                                    <th>Valor Padrão</th>
+                                    <th>Opções</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>nGramOrder</code></td>
+                                    <td>Ordem do n-gram (2 = bigrama, 3 = trigrama)</td>
+                                    <td>3</td>
+                                    <td>2, 3, 4</td>
+                                </tr>
+                                <tr>
+                                    <td><code>maxBitsPerWord</code></td>
+                                    <td>Bits máximos por palavra</td>
+                                    <td>16</td>
+                                    <td>8-32</td>
+                                </tr>
+                                <tr>
+                                    <td><code>punctuation</code></td>
+                                    <td>Pontuação usada nas frases</td>
+                                    <td>['!', '?', '...']</td>
+                                    <td>Personalizável</td>
+                                </tr>
+                                <tr>
+                                    <td><code>delimiter</code></td>
+                                    <td>Delimitador de sentenças</td>
+                                    <td>'§|§'</td>
+                                    <td>Qualquer string</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Examples -->
+                <section class="doc-section">
+                    <h3>💻 Exemplos de Código</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">JavaScript</span>
+                            <button class="code-copy">📋 Copiar</button>
+                        </div>
+                        <pre><code><span class="code-comment">// Criar instância do PokeStego</span>
+<span class="code-keyword">const</span> stego = <span class="code-keyword">new</span> <span class="code-class">PokeStego</span>();
+
+<span class="code-comment">// Usar configuração personalizada</span>
+<span class="code-keyword">const</span> config = {
+    nGramOrder: <span class="code-number">4</span>,
+    punctuation: [<span class="code-string">'⚡'</span>, <span class="code-string">'🔥'</span>, <span class="code-string">'💧'</span>]
+};
+<span class="code-keyword">const</span> stegoCustom = <span class="code-keyword">new</span> <span class="code-class">PokeStego</span>(config);
+
+<span class="code-comment">// Adicionar corpus personalizado</span>
+<span class="code-keyword">const</span> novosPokemons = [<span class="code-string">'Pikachu'</span>, <span class="code-string">'Charizard'</span>, <span class="code-string">'Mewtwo'</span>];
+stegoCustom.addCorpusData(novosPokemons);
+
+<span class="code-comment">// Codificar mensagem</span>
+<span class="code-keyword">const</span> mensagem = <span class="code-string">"A senha é 1234"</span>;
+<span class="code-keyword">const</span> codificado = stegoCustom.encode(mensagem);
+console.log(<span class="code-string">"Codificado:"</span>, codificado);
+
+<span class="code-comment">// Decodificar</span>
+<span class="code-keyword">const</span> decodificado = stegoCustom.decode(codificado);
+console.log(<span class="code-string">"Decodificado:"</span>, decodificado);
+
+<span class="code-comment">// Ver estatísticas</span>
+<span class="code-keyword">const</span> stats = stegoCustom.getStats();
+console.log(<span class="code-string">"Estatísticas:"</span>, stats);</code></pre>
+                    </div>
+                </section>
+
+                <!-- API Reference -->
+                <section class="doc-section">
+                    <h3>📚 Referência da API</h3>
+                    <div class="api-grid">
+                        <div class="api-item">
+                            <h4><code>new PokeStego(config)</code></h4>
+                            <p>Cria uma nova instância do PokeStego com configurações opcionais.</p>
+                        </div>
+                        <div class="api-item">
+                            <h4><code>encode(message)</code></h4>
+                            <p>Codifica uma mensagem usando esteganografia Pokémon.</p>
+                        </div>
+                        <div class="api-item">
+                            <h4><code>decode(text)</code></h4>
+                            <p>Decodifica um texto codificado pelo PokeStego.</p>
+                        </div>
+                        <div class="api-item">
+                            <h4><code>addCorpusData(data)</code></h4>
+                            <p>Adiciona novos dados ao corpus de treinamento.</p>
+                        </div>
+                        <div class="api-item">
+                            <h4><code>getStats()</code></h4>
+                            <p>Retorna estatísticas do modelo atual.</p>
+                        </div>
+                        <div class="api-item">
+                            <h4><code>buildModel(corpus)</code></h4>
+                            <p>Constrói o modelo n-gram a partir do corpus.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <div class="doc-footer">
+                    <p>🚀 PokeStego v2.0.0 - Baseado em Markov Chain Steganography</p>
+                    <p>Feito com ❤️ para fãs de Pokémon e entusiastas de segurança</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="PokeStego.js"></script>
+    <script>
+        (function() {
+            'use strict';
+
+            // DOM Elements
+            const elements = {
+                corpusSelector: document.getElementById('corpus-selector'),
+                inputCorpus: document.getElementById('input-corpus'),
+                loadCorpus: document.getElementById('load-corpus'),
+                inputText: document.getElementById('input-text'),
+                outputText: document.getElementById('output-text'),
+                encodeBtn: document.getElementById('encode-btn'),
+                decodeBtn: document.getElementById('decode-btn'),
+                clearEncode: document.getElementById('clear-encode'),
+                clearDecode: document.getElementById('clear-decode'),
+                statusIndicator: document.getElementById('status-indicator'),
+                progressFill: document.getElementById('progress-fill'),
+                progressText: document.getElementById('progress-text'),
+                ngramDisplay: document.getElementById('ngram-display'),
+                pokemonCount: document.getElementById('pokemon-count'),
+                corpusSize: document.getElementById('corpus-size'),
+                corpusUnique: document.getElementById('corpus-unique'),
+                statNgrams: document.getElementById('stat-ngrams'),
+                statWords: document.getElementById('stat-words'),
+                statCapacity: document.getElementById('stat-capacity'),
+                statMessages: document.getElementById('stat-messages'),
+                toggleDoc: document.getElementById('toggle-doc'),
+                docContent: document.getElementById('doc-content')
+            };
+
+            // State
+            let stego = null;
+            let messageCount = 0;
+            let isBusy = false;
+
+            // Initialize PokeStego
+            function initStego() {
+                try {
+                    stego = new PokeStego({
+                        nGramOrder: 3,
+                        punctuation: ['⚡', '🔥', '💧', '🌿', '!', '?', '...']
+                    });
+                    updateStats();
+                    updateStatus('ready', '✅ Pronto');
+                    elements.ngramDisplay.textContent = '3';
+                    elements.pokemonCount.textContent = PokeStego.POKEDEX.pokemon.length || '905';
+                    enableButtons();
+                    return true;
+                } catch (e) {
+                    console.error('Erro ao inicializar PokeStego:', e);
+                    updateStatus('error', '❌ Erro na inicialização');
+                    return false;
+                }
+            }
+
+            // Update status
+            function updateStatus(type, message) {
+                const indicator = elements.statusIndicator;
+                indicator.textContent = message;
+                indicator.className = 'status-' + type;
+            }
+
+            // Update progress
+            function updateProgress(percent) {
+                const fill = elements.progressFill;
+                const text = elements.progressText;
+                const pct = Math.min(Math.max(percent, 0), 100);
+                fill.style.width = pct + '%';
+                text.textContent = Math.round(pct) + '%';
+            }
+
+            // Enable/disable buttons
+            function enableButtons() {
+                const hasInput = elements.inputText.value.trim().length > 0;
+                const hasOutput = elements.outputText.value.trim().length > 0;
+                const hasCorpus = stego && stego.state && stego.state.model && stego.state.model.size > 0;
+
+                elements.encodeBtn.disabled = !hasInput || !hasCorpus || isBusy;
+                elements.decodeBtn.disabled = !hasOutput || !hasCorpus || isBusy;
+            }
+
+            // Update statistics
+            function updateStats() {
+                if (!stego || !stego.state || !stego.state.model) {
+                    elements.statNgrams.textContent = '0';
+                    elements.statWords.textContent = '0';
+                    elements.statCapacity.textContent = '0';
+                    return;
+                }
+
+                const stats = stego.getStats();
+                if (stats) {
+                    elements.statNgrams.textContent = stats.totalNGrams || 0;
+                    elements.statWords.textContent = stats.totalWords || 0;
+                    const capacity = (stats.totalWords || 0) * 4;
+                    elements.statCapacity.textContent = capacity + ' bits';
+                }
+
+                // Update corpus info
+                if (stego.state.corpus) {
+                    const corpusText = stego.state.corpus.join(' ');
+                    const words = corpusText.match(/\b\w+\b/g) || [];
+                    const unique = new Set(words.map(w => w.toLowerCase()));
+                    elements.corpusSize.textContent = `Palavras: ${words.length}`;
+                    elements.corpusUnique.textContent = `Únicas: ${unique.size}`;
+                }
+            }
+
+            // Load corpus
+            function loadCorpus() {
+                if (!stego) return;
+
+                const selection = elements.corpusSelector.value;
+                let corpusData = [];
+
+                if (selection === 'custom') {
+                    const customText = elements.inputCorpus.value.trim();
+                    if (!customText) {
+                        alert('Por favor, insira um corpus personalizado.');
+                        return;
+                    }
+                    corpusData = customText.split(/[\n,.;!?]+/).filter(s => s.trim().length > 0);
+                } else {
+                    // Use pre-built corpus from PokeStego
+                    const allData = [
+                        ...PokeStego.POKEDEX.pokemon,
+                        ...PokeStego.POKEDEX.items,
+                        ...PokeStego.POKEDEX.moves,
+                        ...PokeStego.POKEDEX.trainers
+                    ];
+
+                    // Filter by generation if needed
+                    if (selection !== 'all') {
+                        // For simplicity, just use all data for now
+                        corpusData = stego.generateTrainPhrases(allData);
+                    } else {
+                        corpusData = stego.generateTrainPhrases(allData);
+                    }
+                }
+
+                try {
+                    updateStatus('busy', '⏳ Carregando corpus...');
+                    isBusy = true;
+                    enableButtons();
+
+                    // Build model
+                    stego.buildModel(corpusData);
+                    updateStats();
+                    updateStatus('ready', '✅ Corpus carregado!');
+                    elements.loadCorpus.textContent = '✅ Carregado!';
+                    setTimeout(() => {
+                        elements.loadCorpus.textContent = 'Carregar Corpus';
+                    }, 2000);
+                } catch (e) {
+                    console.error('Erro ao carregar corpus:', e);
+                    updateStatus('error', '❌ Erro ao carregar corpus');
+                    alert('Erro ao carregar corpus: ' + e.message);
+                } finally {
+                    isBusy = false;
+                    enableButtons();
+                }
+            }
+
+            // Encode message
+            function encodeMessage() {
+                if (!stego || isBusy) return;
+
+                const text = elements.inputText.value.trim();
+                if (!text) {
+                    alert('Digite uma mensagem para codificar.');
+                    return;
+                }
+
+                try {
+                    isBusy = true;
+                    updateStatus('busy', '⏳ Codificando...');
+                    elements.encodeBtn.disabled = true;
+                    elements.encodeBtn.innerHTML = '<span class="btn-icon">⏳</span> Codificando...';
+
+                    // Simulate progress
+                    let progress = 0;
+                    const interval = setInterval(() => {
+                        progress += Math.random() * 10;
+                        if (progress > 90) progress = 90;
+                        updateProgress(progress);
+                    }, 100);
+
+                    // Encode
+                    const encoded = stego.encode(text);
+                    clearInterval(interval);
+                    updateProgress(100);
+
+                    elements.outputText.value = encoded;
+                    messageCount++;
+                    elements.statMessages.textContent = messageCount;
+
+                    updateStatus('ready', '✅ Codificado!');
+                    updateStats();
+                    
+                    // Clear input
+                    elements.inputText.value = '';
+                    enableButtons();
+
+                } catch (e) {
+                    console.error('Erro ao codificar:', e);
+                    updateStatus('error', '❌ Erro na codificação');
+                    alert('Erro ao codificar mensagem: ' + e.message);
+                } finally {
+                    isBusy = false;
+                    elements.encodeBtn.innerHTML = '<span class="btn-icon">🔐</span> Codificar Mensagem';
+                    enableButtons();
+                    setTimeout(() => updateProgress(0), 2000);
+                }
+            }
+
+            // Decode message
+            function decodeMessage() {
+                if (!stego || isBusy) return;
+
+                const text = elements.outputText.value.trim();
+                if (!text) {
+                    alert('Cole um texto codificado para decodificar.');
+                    return;
+                }
+
+                try {
+                    isBusy = true;
+                    updateStatus('busy', '⏳ Decodificando...');
+                    elements.decodeBtn.disabled = true;
+                    elements.decodeBtn.innerHTML = '<span class="btn-icon">⏳</span> Decodificando...';
+
+                    // Simulate progress
+                    let progress = 0;
+                    const interval = setInterval(() => {
+                        progress += Math.random() * 10;
+                        if (progress > 90) progress = 90;
+                        updateProgress(progress);
+                    }, 100);
+
+                    // Decode
+                    const decoded = stego.decode(text);
+                    clearInterval(interval);
+                    updateProgress(100);
+
+                    elements.inputText.value = decoded;
+                    
+                    updateStatus('ready', '✅ Decodificado!');
+
+                } catch (e) {
+                    console.error('Erro ao decodificar:', e);
+                    updateStatus('error', '❌ Erro na decodificação');
+                    alert('Erro ao decodificar mensagem: ' + e.message);
+                } finally {
+                    isBusy = false;
+                    elements.decodeBtn.innerHTML = '<span class="btn-icon">🔓</span> Decodificar Mensagem';
+                    enableButtons();
+                    setTimeout(() => updateProgress(0), 2000);
+                }
+            }
+
+            // Clear functions
+            function clearEncode() {
+                elements.inputText.value = '';
+                enableButtons();
+            }
+
+            function clearDecode() {
+                elements.outputText.value = '';
+                enableButtons();
+            }
+
+            // Toggle documentation
+            function toggleDoc() {
+                const content = elements.docContent;
+                const btn = elements.toggleDoc;
+                if (content.style.display === 'none') {
+                    content.style.display = 'block';
+                    btn.textContent = '▲';
+                } else {
+                    content.style.display = 'none';
+                    btn.textContent = '▼';
+                }
+            }
+
+            // Event listeners
+            function setupEventListeners() {
+                // Corpus
+                elements.corpusSelector.addEventListener('change', function() {
+                    const isCustom = this.value === 'custom';
+                    elements.inputCorpus.disabled = !isCustom;
+                    if (!isCustom) {
+                        elements.inputCorpus.value = '';
+                    }
+                });
+
+                elements.loadCorpus.addEventListener('click', loadCorpus);
+
+                // Encode
+                elements.encodeBtn.addEventListener('click', encodeMessage);
+                elements.clearEncode.addEventListener('click', clearEncode);
+
+                // Decode
+                elements.decodeBtn.addEventListener('click', decodeMessage);
+                elements.clearDecode.addEventListener('click', clearDecode);
+
+                // Input events
+                elements.inputText.addEventListener('input', enableButtons);
+                elements.outputText.addEventListener('input', enableButtons);
+
+                // Keyboard shortcuts
+                elements.inputText.addEventListener('keydown', function(e) {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                        e.preventDefault();
+                        encodeMessage();
+                    }
+                });
+
+                elements.outputText.addEventListener('keydown', function(e) {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                        e.preventDefault();
+                        decodeMessage();
+                    }
+                });
+
+                // Documentation toggle
+                elements.toggleDoc.addEventListener('click', toggleDoc);
+
+                // Auto-load corpus on init
+                setTimeout(() => {
+                    loadCorpus();
+                }, 500);
+            }
+
+            // Copy code examples
+            document.querySelectorAll('.code-copy').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const code = this.closest('.code-block').querySelector('code');
+                    if (code) {
+                        navigator.clipboard.writeText(code.textContent).then(() => {
+                            this.textContent = '✅ Copiado!';
+                            setTimeout(() => {
+                                this.textContent = '📋 Copiar';
+                            }, 2000);
+                        });
+                    }
+                });
+            });
+
+            // Initialize
+            function init() {
+                if (initStego()) {
+                    setupEventListeners();
+                    console.log('🚀 PokeStego inicializado com sucesso!');
+                } else {
+                    console.error('❌ Falha ao inicializar PokeStego');
+                }
+            }
+
+            // Run on DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+        })();
+    </script>
+</body>
+</html>
